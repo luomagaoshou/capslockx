@@ -228,9 +228,9 @@ Tab键模拟(dx, dy, 状态){
 }
 
 #if CapsLockXMode
-
-*t:: Delete
-*g:: Enter
+; mycode
+;*t:: Delete
+;*g:: Enter
 ; *[:: Tab键模拟.上按("[")
 ; *]:: Tab键模拟.下按("]")
 *p:: Tab键模拟.上按("p")

@@ -63,37 +63,36 @@ global GID_PRESSANDTAP:=7
 Return
 
 #if CapsLockXMode && !CLX_MouseButtonSwitched
-
+; mycode
 ; 鼠标按键处理
-*e:: CLX_LMouseButtonDown("e")
-*q:: CLX_RMouseButtonDown("q")
-*e Up::CLX_LMouseButtonUp()k
-*q Up:: CLX_RMouseButtonUp()
+*w:: CLX_LMouseButtonDown("w")
+*r:: CLX_RMouseButtonDown("r")
+*w Up::CLX_LMouseButtonUp()
+*r Up:: CLX_RMouseButtonUp()
 
 #if CapsLockXMode && CLX_MouseButtonSwitched
 
 ; 鼠标按键处理
-*e:: CLX_RMouseButtonDown("e")
-*q:: CLX_LMouseButtonDown("q")
-*e Up::CLX_RMouseButtonUp()
-*q Up:: CLX_LMouseButtonUp()
+*w:: CLX_RMouseButtonDown("w")
+*r:: CLX_LMouseButtonDown("r")
+*w Up::CLX_RMouseButtonUp()
+*r Up:: CLX_LMouseButtonUp()
 
 #if CapsLockXMode
 
 ; 鼠标运动处理
-*a:: mouseSimulator.左按("a")
-*d:: mouseSimulator.右按("d")
-*w:: mouseSimulator.上按("w")
-*s:: mouseSimulator.下按("s")
+*s:: mouseSimulator.左按("s")
+*f:: mouseSimulator.右按("f")
+*e:: mouseSimulator.上按("e")
+*d:: mouseSimulator.下按("d")
 
 #if CapsLockXMode
 
 ; hold right shift key to simulate horizonal scrolling
-*>+r:: ScrollSimulator.左按("r")
-*>+f:: ScrollSimulator.右按("f")
-*r:: ScrollSimulator.上按("r")
-*f:: ScrollSimulator.下按("f")
-
+*>+t:: ScrollSimulator.左按("t")
+*>+g:: ScrollSimulator.右按("g")
+*t:: ScrollSimulator.上按("t")
+*g:: ScrollSimulator.下按("g")
 #if
 
 CursorHandleGet()
@@ -157,7 +156,7 @@ PostMessage_ScrollMouse(dx, dy)
 ScrollMouse(dx, dy)
 {
     global TMouse_SendInputScroll
-    
+
     ; prevent overflow
     if (dx >= 16384) {
         dx:=16384
@@ -173,7 +172,7 @@ ScrollMouse(dx, dy)
     }
     ; m:=SubStr("0000000000" . (dy), -10)
     ; tooltip %m%
-    
+
     if (TMouse_SendInputScroll) {
         SendInput_ScrollMouse(dx, dy)
     } else {

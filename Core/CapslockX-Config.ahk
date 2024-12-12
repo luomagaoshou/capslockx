@@ -38,7 +38,7 @@ CLX_Config("_NOTICE_", "ENCODING_USING", "UTF16_LE", "")
 ; 基本设定
 ; [Core]
 global T_XKeyAsSpace := CLX_Config("Core", "T_XKeyAsSpace", 1, ("使用 Space 作为引导键（默认启用，游戏玩家可在 .user.ignore.txt 里配置忽略游戏窗口）"))
-global T_XKeyAsCapsLock := CLX_Config("Core", "T_XKeyAsCapsLock", 1, ("使用 CapsLock 作为引导键（默认启用）"))
+global T_XKeyAsCapsLock := CLX_Config("Core", "T_XKeyAsCapsLock", 0, ("使用 CapsLock 作为引导键（默认启用）"))
 global T_XKeyAsInsert := CLX_Config("Core", "T_XKeyAsInsert", 0, ("使用 Insert 作为引导键"))
 global T_XKeyAsScrollLock := CLX_Config("Core", "T_XKeyAsScrollLock", 0, ("使用 ScrollLock 作为引导键"))
 global T_XKeyAsRAlt := CLX_Config("Core", "T_XKeyAsRAlt", 0, ("使用 右 Alt 作为引导键"))

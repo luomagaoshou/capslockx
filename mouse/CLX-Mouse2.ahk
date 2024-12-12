@@ -79,7 +79,7 @@ Return
 ;CapsLockXMode := 1
 
 #if CapsLockXMode && !CLX_MouseButtonSwitched
-
+; mycode
 ; 鼠标按键处理
 *w:: CLX_LMouseButtonDown("w")
 *r:: CLX_RMouseButtonDown("r")
