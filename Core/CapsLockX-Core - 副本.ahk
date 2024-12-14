@@ -40,7 +40,9 @@ global CM_CapsLockX := 2 ; CapsLockX 模式，通过长按CLX键进入
 ; global CM_FNX := 3 ; FnX 模式并不存在
 global CapsLockPressTimestamp := 0
 global CLX_上次触发键 := ""
-global CLX_cumstom_key := "RAlt"
+
+global CLX_cumstom_key := "F4"
+
 ; value func
 CapsLockX()
 {
@@ -96,8 +98,11 @@ if(T_XKeyAsScrollLock)
     Hotkey *ScrollLock, CLX_Dn
 if(T_XKeyAsRAlt)
     Hotkey *RAlt, CLX_Dn
+if(T_XKeyAsLAlt)
+    Hotkey *LAlt, CLX_DN
 if(T_XKeyAsF4)
-    Hotkey *%CLX_cumstom_key%, CLX_DN
+    Hotkey *F4, CLX_DN
+
 
 Hotkey, If, CLX_NotAvaliable()
 
@@ -111,8 +116,10 @@ if(T_XKeyAsScrollLock)
     Hotkey ScrollLock, CLX_NotAvaliable
 if(T_XKeyAsRAlt)
     Hotkey RAlt, CLX_NotAvaliable
+if(T_XKeyAsLAlt)
+    Hotkey LAlt, CLX_NotAvaliable
 if(T_XKeyAsF4)
-    Hotkey %CLX_cumstom_key%, CLX_NotAvaliable
+    Hotkey F4, CLX_NotAvaliable
 
 Hotkey, If
 
@@ -126,10 +133,10 @@ if(T_XKeyAsScrollLock)
     Hotkey *ScrollLock Up, CLX_Up
 if(T_XKeyAsRAlt)
     Hotkey *RAlt Up, CLX_Up
+if(T_XKeyAsLAlt)
+    Hotkey *LAlt Up, CLX_Up
 if(T_XKeyAsF4)
-    Hotkey *%CLX_cumstom_key% Up, CLX_Up
-
-
+    Hotkey *F4 Up, CLX_Up
 SetWorkingDir, %A_ScriptDir%\..\
 
 #Include Core\CapsLockX-i18n.ahk
@@ -266,16 +273,7 @@ CLX_ModeEnter()
     ; SetTimer CLX_HideToolTips, -1000
     CapsLockXMode |= CM_CapsLockX
 }
-show_info(CLX_cumstom_key, F4Q, CLX_上次触发键，触发键,CLX_AND_SPACE_Q, name="", value=""){
-        ToolTip % "CLX_cumstom_key: " CLX_cumstom_key "`n"
-            . "F4Q: " F4Q "`n"
-           . "CLX_上次触发键: " CLX_上次触发键 "`n"
-         . "A_PriorKey: " A_PriorKey "`n"
-         . "A_TimeSincePriorHotkey: " A_TimeSincePriorHotkey "`n"
-         . "触发键: " 触发键 "`n"
-         . "CLX_AND_SPACE_Q: " CLX_AND_SPACE_Q "`n"
-         . name ": " value "`n"
-     }
+
 CLX_Dn()
 {
     /*
@@ -297,19 +295,21 @@ CLX_Dn()
     其它键按住 := 触发键 && 触发键 != A_PriorKey && GetKeyState(A_PriorKey, "P")
     WheelQ := InStr("WheelDown|WheelUp", A_PriorKey)
     SpaceQ := 触发键 == "Space"
-    F4Q := 触发键 == CLX_cumstom_key
     CapsLockQ := 触发键 == "CapsLock"
+    LAltQ := 触发键 = "LAlt"
+    F4Q := 触发键 = "F4"
     ModifierQ := InStr("LControl|RControl|LShift|RShift|LAlt|RAlt|LWin|RWin", A_PriorKey)
-    ModifierEnableQ := (!SpaceQ ||!F4Q) && ModifierQ
+    ModifierEnableQ := !SpaceQ && ModifierQ
+
 
     CLX_AND_SPACE_Q := (A_PriorKey == "CapsLock" && 触发键 == CLX_cumstom_key) || (触发键 == "CapsLock" && A_PriorKey == CLX_cumstom_key )
-    ;show_info(CLX_cumstom_key, F4, CLX_上次触发键，触发键,CLX_AND_SPACE_Q, "outer")
-
-
-
+        ToolTip % "CLX_cumstom_key: " CLX_cumstom_key "`n"
+           . "CLX_上次触发键: " CLX_上次触发键 "`n"
+         . "A_PriorKey: " A_PriorKey "`n"
+         . "A_TimeSincePriorHotkey: " A_TimeSincePriorHotkey "`n"
+         . "触发键: " 触发键 "`n"
+         . "CLX_AND_SPACE_Q: " CLX_AND_SPACE_Q "`n"
     if (CLX_AND_SPACE_Q && A_TimeSincePriorHotkey < 250) {
-            show_info(CLX_cumstom_key, F4Q, CLX_上次触发键，触发键,CLX_AND_SPACE_Q, "指定键触发")
-
         ; CLX_ModeEnter()
         CapsLockXMode |= CM_CapsLockX
         UpdateCapsLockXLight()
@@ -319,11 +319,9 @@ CLX_Dn()
 
     ; tooltip % ModifierQ "a" ModifierEnableQ "a" WheelQ "a"  其它键按住
     BypassCapsLockX := !ModifierEnableQ && !WheelQ && 其它键按住
-    ;ToolTip % "BypassCapsLockX: " BypassCapsLockX
     if (BypassCapsLockX) {
-               ;show_info(CLX_cumstom_key, F4, CLX_上次触发键，触发键,CLX_AND_SPACE_Q, "其他键触发")
         CLX_上次触发键 := ""
-         ;ToolTip, % first5char "_" 触发键
+        ; ToolTip, % first5char "_" 触发键
         Send {Blind}{%触发键% Down}
         KeyWait %触发键%
         Send {Blind}{%触发键% Up}
@@ -343,13 +341,9 @@ CLX_Dn()
     CapsLockXMode |= CM_FN
     CapsLockXMode &= ~CM_CapsLockX
 
-
     ; ToolTip clxmode
     if (A_PriorKey == CLX_上次触发键) {
-              show_info(CLX_cumstom_key, F4, CLX_上次触发键，触发键,CLX_AND_SPACE_Q, "单键触发")
         if (A_PriorKey == CLX_cumstom_key) {
-
-
             ; 长按空格时保持原功能
             ; TODO: read system repeat interval
             if ( A_TickCount - CapsLockPressTimestamp > 200) {
