@@ -41,7 +41,10 @@ global T_XKeyAsSpace := CLX_Config("Core", "T_XKeyAsSpace", 1, ("使用 Space �
 global T_XKeyAsCapsLock := CLX_Config("Core", "T_XKeyAsCapsLock", 0, ("使用 CapsLock 作为引导键（默认启用）"))
 global T_XKeyAsInsert := CLX_Config("Core", "T_XKeyAsInsert", 0, ("使用 Insert 作为引导键"))
 global T_XKeyAsScrollLock := CLX_Config("Core", "T_XKeyAsScrollLock", 0, ("使用 ScrollLock 作为引导键"))
-global T_XKeyAsRAlt := CLX_Config("Core", "T_XKeyAsRAlt", 0, ("使用 右 Alt 作为引导键"))
+global T_XKeyAsRAlt := CLX_Config("Core", "T_XKeyAsRAlt", 1, ("使用 右 Alt 作为引导键"))
+
+global T_XKeyAsCustomKey := CLX_Config("Core", "T_XKeyAsCustomKey", 1, ("使用 CustomKey 作为引导键"))
+
 
 global T_UseScrollLockLight := CLX_Config("Advanced", "T_UseScrollLockLight", 0, "进阶： 是否使用 ScrollLock 灯来显示 CapsLockX 状态（不建议）")
 global T_UseCapsLockLight := CLX_Config("Advanced", "T_UseCapsLockLight", 0, "进阶： 是否使用 CapsLockX 灯来显示 CapsLockX 状态（强烈不建议）")

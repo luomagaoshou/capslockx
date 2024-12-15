@@ -18,8 +18,6 @@
 ; mycode
 #InstallMouseHook ; 安装鼠标钩子
 ;global CapsLockX := 1
-ToolTip, mouse2 21, %CapsLockX%
-ToolTip, mouse2 22, %CapsLockXMode%
 ;Gui, CapsLockXMode
 ;global CapsLockXMode := 1
 
@@ -249,6 +247,11 @@ SendInput_MouseMove(x, y)
 
 ; void mouseSimulator
 mouseSimulator(dx, dy, 状态){
+    ;ToolTip % "CapsLockXMode: " CapsLockXMode "`n"
+     ;       . "CM_CapsLockX: " CM_CapsLockX "`n"
+    if (CM_CapsLockX != 2) || (CapsLockXMode != 2){
+        return
+    }
     ;MsgBox "开始"
 
     if (!CapsLockXMode) {
@@ -312,6 +315,9 @@ mouseSimulator(dx, dy, 状态){
     鼠标模拟_ToolTip(msg)
 }
 ScrollSimulator(dx, dy, 状态){
+        if (CM_CapsLockX != 2) || (CapsLockXMode != 2){
+        return
+    }
     if (!CapsLockXMode) {
         return ScrollSimulator.止动()
     }
@@ -334,6 +340,9 @@ ScrollSimulator(dx, dy, 状态){
     ScrollMouse(dx, dy)
 }
 DragSimulator(dx, dy, 状态){
+        if (CM_CapsLockX != 2) || (CapsLockXMode != 2){
+        return
+    }
     if (!CapsLockXMode) {
         return DragSimulator.止动()
     }
@@ -418,6 +427,9 @@ CLX_LMouseButtonUp(){
 
 }
 CLX_RMouseButtonDown(wait){
+            if (CM_CapsLockX != 2) || (CapsLockXMode != 2){
+        return
+    }
     global CLX_RMouseButtonWait
     if (CLX_RMouseButtonWait) {
         return
