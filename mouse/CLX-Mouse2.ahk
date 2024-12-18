@@ -11,15 +11,16 @@
 
 ; will include once
 ;#Include, Modules/AccModel/AccModel.ahk
+#Include CapsLockX-i18n.ahk
 #Include, AccModel/AccModel.ahk
-
+#Include, CapsLockX-Config2.ahk
 ;#Include, ../Modules/@Help.ahk
 
 ; mycode
 #InstallMouseHook ; 安装鼠标钩子
-;global CapsLockX := 1
+global CapsLockX := 1
 ;Gui, CapsLockXMode
-;global CapsLockXMode := 1
+global CapsLockXMode := 1
 
 
 if (!CapsLockX) {
@@ -37,7 +38,7 @@ global TMouse_StopAtScreenEdge := CLX_Config("TMouse", "StopAtScreenEdge", 1,t( 
 
 ; 根据屏幕 DPI 比率，自动计算，得出，如果数值不对，才需要纠正
 global TMouse_UseDPIRatio := CLX_Config("TMouse", "UseDPIRatio", 1,t( "是否根据屏幕 DPI 比率缩放鼠标速度"))
-global TMouse_MouseSpeedRatio := CLX_Config("TMouse", "MouseSpeedRatio", 1,t( "鼠标加速度比率, 默认为 1, 你想慢点就改成 0.5 之类"))
+global TMouse_MouseSpeedRatio := CLX_Config("TMouse", "MouseSpeedRatio", 1,tFFFSDAFFDS( "鼠标加速度比率, 默认为 1, 你想慢点就改成 0.5 之类"))
 global TMouse_WheelSpeedRatio := CLX_Config("TMouse", "WheelSpeedRatio", 1,t( "滚轮加速度比率, 默认为 1, 你想慢点就改成 0.5 之类"))
 global TMouse_DPIRatio := TMouse_UseDPIRatio ? A_ScreenDPI / 96 : 1
 global CLX_HJKL_Scroll := CLX_Config("TMouse", "CLX_HJKL_Scroll", 0,t( "使用IJKL滚轮移动滚轮，比RF多一个横轴。"))
@@ -76,37 +77,60 @@ Return
 
 ;CapsLockXMode := 1
 
+#If
+CapsLock & `::
+    changeMode()
+    if (CapsLockXMode) {
+        ToolTip, Entered CapsLockX Mode
+        ; 在 CapsLockX 模式下启用额外功能
+        ; 可以定义 #If CapsLockXMode 的条件
+    } else {
+        ToolTip, Exited CapsLockX Mode
+        ; 退出模式，恢复默认功能
+    }
+
+    Return
+; 定义 changeMode 函数
+changeMode() {
+    global CapsLockXMode  ; 声明 CapsLockXMode 为全局变量
+    CapsLockXMode := !CapsLockXMode  ; 切换 CapsLockXMode 状态
+    ToolTip, CapsLockXMode is now: %CapsLockXMode%  ; 显示当前状态
+    SetTimer, RemoveToolTip, -1000  ; 1 秒后移除提示
+}
+RemoveToolTip:
+    ToolTip
+    Return
 #if CapsLockXMode && !CLX_MouseButtonSwitched
 ; mycode
 ; 鼠标按键处理
-*w:: CLX_LMouseButtonDown("w")
-*r:: CLX_RMouseButtonDown("r")
-*w Up::CLX_LMouseButtonUp()
-*r Up:: CLX_RMouseButtonUp()
+w:: CLX_LMouseButtonDown("w")
+r:: CLX_RMouseButtonDown("r")
+w Up::CLX_LMouseButtonUp()
+r Up:: CLX_RMouseButtonUp()
 
 #if CapsLockXMode && CLX_MouseButtonSwitched
 
 ; 鼠标按键处理
-*w:: CLX_RMouseButtonDown("w")
-*r:: CLX_LMouseButtonDown("r")
-*w Up::CLX_RMouseButtonUp()
-*r Up:: CLX_LMouseButtonUp()
+w:: CLX_RMouseButtonDown("w")
+r:: CLX_LMouseButtonDown("r")
+w Up::CLX_RMouseButtonUp()
+r Up:: CLX_LMouseButtonUp()
 
 #if CapsLockXMode
 
 ; 鼠标运动处理
-*s:: mouseSimulator.左按("s")
-*f:: mouseSimulator.右按("f")
-*e:: mouseSimulator.上按("e")
-*d:: mouseSimulator.下按("d")
+s:: mouseSimulator.左按("s")
+f:: mouseSimulator.右按("f")
+e:: mouseSimulator.上按("e")
+d:: mouseSimulator.下按("d")
 
 #if CapsLockXMode
 
 ; hold right shift key to simulate horizonal scrolling
-*>+t:: ScrollSimulator.左按("t")
-*>+g:: ScrollSimulator.右按("g")
-*t:: ScrollSimulator.上按("t")
-*g:: ScrollSimulator.下按("g")
+>+t:: ScrollSimulator.左按("t")
+>+g:: ScrollSimulator.右按("g")
+t:: ScrollSimulator.上按("t")
+g:: ScrollSimulator.下按("g")
 
 #if
 
@@ -247,11 +271,8 @@ SendInput_MouseMove(x, y)
 
 ; void mouseSimulator
 mouseSimulator(dx, dy, 状态){
-    ;ToolTip % "CapsLockXMode: " CapsLockXMode "`n"
+    ToolTip % "CapsLockXMode: " CapsLockXMode "`n"
      ;       . "CM_CapsLockX: " CM_CapsLockX "`n"
-    if (CM_CapsLockX != 2) || (CapsLockXMode != 2){
-        return
-    }
     ;MsgBox "开始"
 
     if (!CapsLockXMode) {
@@ -315,9 +336,7 @@ mouseSimulator(dx, dy, 状态){
     鼠标模拟_ToolTip(msg)
 }
 ScrollSimulator(dx, dy, 状态){
-        if (CM_CapsLockX != 2) || (CapsLockXMode != 2){
-        return
-    }
+
     if (!CapsLockXMode) {
         return ScrollSimulator.止动()
     }
@@ -340,9 +359,7 @@ ScrollSimulator(dx, dy, 状态){
     ScrollMouse(dx, dy)
 }
 DragSimulator(dx, dy, 状态){
-        if (CM_CapsLockX != 2) || (CapsLockXMode != 2){
-        return
-    }
+
     if (!CapsLockXMode) {
         return DragSimulator.止动()
     }
@@ -427,9 +444,7 @@ CLX_LMouseButtonUp(){
 
 }
 CLX_RMouseButtonDown(wait){
-            if (CM_CapsLockX != 2) || (CapsLockXMode != 2){
-        return
-    }
+
     global CLX_RMouseButtonWait
     if (CLX_RMouseButtonWait) {
         return
