@@ -38,7 +38,6 @@ global TMouse_StopAtScreenEdge := CLX_Config("TMouse", "StopAtScreenEdge", 1,t( 
 
 ; 根据屏幕 DPI 比率，自动计算，得出，如果数值不对，才需要纠正
 global TMouse_UseDPIRatio := CLX_Config("TMouse", "UseDPIRatio", 1,t( "是否根据屏幕 DPI 比率缩放鼠标速度"))
-global TMouse_MouseSpeedRatio := CLX_Config("TMouse", "MouseSpeedRatio", 1,tFFFSDAFFDS( "鼠标加速度比率, 默认为 1, 你想慢点就改成 0.5 之类"))
 global TMouse_WheelSpeedRatio := CLX_Config("TMouse", "WheelSpeedRatio", 1,t( "滚轮加速度比率, 默认为 1, 你想慢点就改成 0.5 之类"))
 global TMouse_DPIRatio := TMouse_UseDPIRatio ? A_ScreenDPI / 96 : 1
 global CLX_HJKL_Scroll := CLX_Config("TMouse", "CLX_HJKL_Scroll", 0,t( "使用IJKL滚轮移动滚轮，比RF多一个横轴。"))
@@ -76,9 +75,8 @@ Return
 ;MsgBox "before"
 
 ;CapsLockXMode := 1
-
-#If
-CapsLock & `::
+#if
+^!e::
     changeMode()
     if (CapsLockXMode) {
         ToolTip, Entered CapsLockX Mode
@@ -88,18 +86,20 @@ CapsLock & `::
         ToolTip, Exited CapsLockX Mode
         ; 退出模式，恢复默认功能
     }
-
     Return
+
 ; 定义 changeMode 函数
 changeMode() {
     global CapsLockXMode  ; 声明 CapsLockXMode 为全局变量
     CapsLockXMode := !CapsLockXMode  ; 切换 CapsLockXMode 状态
     ToolTip, CapsLockXMode is now: %CapsLockXMode%  ; 显示当前状态
-    SetTimer, RemoveToolTip, -1000  ; 1 秒后移除提示
+    SetTimer, RemoveToolTip, -1000  ; 1秒后移除提示
 }
+
 RemoveToolTip:
     ToolTip
     Return
+
 #if CapsLockXMode && !CLX_MouseButtonSwitched
 ; mycode
 ; 鼠标按键处理
@@ -271,7 +271,7 @@ SendInput_MouseMove(x, y)
 
 ; void mouseSimulator
 mouseSimulator(dx, dy, 状态){
-    ToolTip % "CapsLockXMode: " CapsLockXMode "`n"
+    ;ToolTip % "CapsLockXMode: " CapsLockXMode "`n"
      ;       . "CM_CapsLockX: " CM_CapsLockX "`n"
     ;MsgBox "开始"
 
