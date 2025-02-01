@@ -1,4 +1,7 @@
-﻿; ========== CapsLockX ==========
+﻿
+
+
+; ========== CapsLockX ==========
 ; 注：Save as UTF-8 with BOM please
 ; 名称：摸拟鼠标
 ; 描述：WASD鼠标移动，QE 左右键 RF滚轮
@@ -11,22 +14,14 @@
 
 ; will include once
 ;#Include, Modules/AccModel/AccModel.ahk
-#Include CapsLockX-i18n.ahk
+;#Include D:\PycharmProjects\capslockx\mouse\按键模式.ahk
+#Include, CapsLockX-i18n.ahk
 #Include, AccModel/AccModel.ahk
 #Include, CapsLockX-Config2.ahk
 ;#Include, ../Modules/@Help.ahk
 
 ; mycode
 #InstallMouseHook ; 安装鼠标钩子
-global CapsLockX := 1
-;Gui, CapsLockXMode
-global CapsLockXMode := 0
-
-
-if (!CapsLockX) {
-    MsgBox, % "本模块只在 11 CapsLockX 下工作 / This module is only for CapsLockX"
-    ExitApp
-}
 
 global TMouse_Disabled := CLX_Config("TMouse", "Disabled", 0, t("禁用模拟鼠标模块"))
 global TMouse_SendInput := CLX_Config("TMouse", "SendInput", 1,t( "使用 SendInput 方法提高模拟鼠标点击、移动性能"))
@@ -74,17 +69,7 @@ global GID_PRESSANDTAP:=7
 Return
 
 
-; 定义 changeMode 函数
-changeMode() {
-    global CapsLockXMode  ; 声明 CapsLockXMode 为全局变量
-    CapsLockXMode := !CapsLockXMode  ; 切换 CapsLockXMode 状态
-    ToolTip, CapsLockXMode is now: %CapsLockXMode%  ; 显示当前状态
-    SetTimer, RemoveToolTip, -1000  ; 1秒后移除提示
-}
 
-RemoveToolTip:
-    ToolTip
-    Return
 
 ; 初始化状态变量
 TabIsPressed := false  ; 跟踪 Tab 键的按下状态
@@ -113,32 +98,41 @@ Space:: changeMode()
 #IF ; 恢复无条件状态
 
 
+;#if CapsLockXMode
 
-#if CapsLockXMode && !CLX_MouseButtonSwitched
-; mycode
+; 鼠标运动处理
+;s:: mouseSimulator.左按("s")
+;f:: mouseSimulator.右按("f")
+;e:: mouseSimulator.上按("e")
+;d:: mouseSimulator.下按("d")
+
+;#if CapsLockXMode
+
+; hold right shift key to simulate horizonal scrolling
+;>+t:: ScrollSimulator.左按("t")
+;>+g:: ScrollSimulator.右按("g")
+;t:: ScrollSimulator.上按("t")
+;g:: ScrollSimulator.下按("g")
+
+
+#if CurrentMode & LAltMode
+
+; 鼠标运动处理
+a:: show_info_鼠标操作("配置成功")
+s:: mouseSimulator.左按("s")
+f:: mouseSimulator.右按("f")
+e:: mouseSimulator.上按("e")
+d:: mouseSimulator.下按("d")
+
+#if CurrentMode & LAltMode
+
 ; 鼠标按键处理
 w:: CLX_LMouseButtonDown("w")
 r:: CLX_RMouseButtonDown("r")
 w Up::CLX_LMouseButtonUp()
 r Up:: CLX_RMouseButtonUp()
 
-#if CapsLockXMode && CLX_MouseButtonSwitched
-
-; 鼠标按键处理
-w:: CLX_RMouseButtonDown("w")
-r:: CLX_LMouseButtonDown("r")
-w Up::CLX_RMouseButtonUp()
-r Up:: CLX_LMouseButtonUp()
-
-#if CapsLockXMode
-
-; 鼠标运动处理
-s:: mouseSimulator.左按("s")
-f:: mouseSimulator.右按("f")
-e:: mouseSimulator.上按("e")
-d:: mouseSimulator.下按("d")
-
-#if CapsLockXMode
+#if CurrentMode & LAltMode
 
 ; hold right shift key to simulate horizonal scrolling
 >+t:: ScrollSimulator.左按("t")
@@ -146,9 +140,42 @@ d:: mouseSimulator.下按("d")
 t:: ScrollSimulator.上按("t")
 g:: ScrollSimulator.下按("g")
 
+#if CurrentMode & LAltMode
+q:: clearMode()
+
 #if
 
 
+
+;a:: show_info_鼠标操作("测试")
+
+;x:: ToolTip %CurrentMode%
+
+
+; 定义 changeMode 函数
+changeMode() {
+    global CapsLockXMode  ; 声明 CapsLockXMode 为全局变量
+    CapsLockXMode := !CapsLockXMode  ; 切换 CapsLockXMode 状态
+    ToolTip, CapsLockXMode is now: %CapsLockXMode%  ; 显示当前状态
+    SetTimer, RemoveToolTip, -1000  ; 1秒后移除提示
+}
+
+RemoveToolTip:
+    ToolTip
+    Return
+
+show_info_鼠标操作(other_info := ""){
+return
+    global CurrentMode, LAltMode
+    ;CurrentMode += 1
+        tip_str := "CurrentMode: " CurrentMode "`n"
+         . "LAltMode: " LAltMode "`n"
+         . "CurrentMode & LAltMode: "  CurrentMode & LAltMode "`n"
+         . "other_info: " other_info "`n"
+
+
+    ToolTip % tip_str
+}
 CursorHandleGet()
 {
     VarSetCapacity(PCURSORINFO, 20, 0) ;为鼠标信息 结构 设置出20字节空间

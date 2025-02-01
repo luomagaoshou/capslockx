@@ -11,22 +11,24 @@
 
 ; will include once
 ;#Include, Modules/AccModel/AccModel.ahk
-#Include CapsLockX-i18n.ahk
+
+#Include, CapsLockX-i18n.ahk
 #Include, AccModel/AccModel.ahk
 #Include, CapsLockX-Config2.ahk
+
+
+
 ;#Include, ../Modules/@Help.ahk
 
 ; mycode
 #InstallMouseHook ; 安装鼠标钩子
-global CapsLockX := 1
+
 ;Gui, CapsLockXMode
-global CapsLockXMode := 0
-
-
-if (!CapsLockX) {
-    MsgBox, % "本模块只在 11 CapsLockX 下工作 / This module is only for CapsLockX"
-    ExitApp
-}
+;global CapsLockXMode := 1
+;global CurrentMode := 5
+;global LAltMode := 4
+;global CurrentMode
+;global LAltMode
 
 global TMouse_Disabled := CLX_Config("TMouse", "Disabled", 0, t("禁用模拟鼠标模块"))
 global TMouse_SendInput := CLX_Config("TMouse", "SendInput", 1,t( "使用 SendInput 方法提高模拟鼠标点击、移动性能"))
@@ -86,59 +88,30 @@ RemoveToolTip:
     ToolTip
     Return
 
-; 初始化状态变量
-TabIsPressed := false  ; 跟踪 Tab 键的按下状态
+;return
 
-; 检测 Tab 键按下，保留默认功能
-Tab::
-    TabIsPressed := true  ; 标记 Tab 键被按下
-    KeyWait, Tab, T0      ; 确保不干扰 Tab 的默认功能
-    Return
+a:: show_info_鼠标操作("测试")
 
-; 检测 Tab 键松开，保留默认功能
-Tab Up::
-    TabIsPressed := false  ; 标记 Tab 键被松开
-    SendPlay ,{Tab}
-    Return
+x:: ToolTip %CurrentMode%
 
-; 定义 #IF 条件，仅当 Tab 键按下时激活扩展功能
-#IF TabIsPressed
+#if CurrentMode & LAltMode
 
 ; 鼠标运动处理
-s:: mouseSimulator.左按("s")  ; Tab + s 模拟鼠标向左移动
-f:: mouseSimulator.右按("f")  ; Tab + f 模拟鼠标向右移动
-e:: mouseSimulator.上按("e")  ; Tab + e 模拟鼠标向上移动
-d:: mouseSimulator.下按("d")  ; Tab + d 模拟鼠标向下移动
-Space:: changeMode()
-#IF ; 恢复无条件状态
+a:: show_info_鼠标操作("配置成功")
+s:: mouseSimulator.左按("s")
+f:: mouseSimulator.右按("f")
+e:: mouseSimulator.上按("e")
+d:: mouseSimulator.下按("d")
 
+#if CurrentMode & LAltMode
 
-
-#if CapsLockXMode && !CLX_MouseButtonSwitched
-; mycode
 ; 鼠标按键处理
 w:: CLX_LMouseButtonDown("w")
 r:: CLX_RMouseButtonDown("r")
 w Up::CLX_LMouseButtonUp()
 r Up:: CLX_RMouseButtonUp()
 
-#if CapsLockXMode && CLX_MouseButtonSwitched
-
-; 鼠标按键处理
-w:: CLX_RMouseButtonDown("w")
-r:: CLX_LMouseButtonDown("r")
-w Up::CLX_RMouseButtonUp()
-r Up:: CLX_LMouseButtonUp()
-
-#if CapsLockXMode
-
-; 鼠标运动处理
-s:: mouseSimulator.左按("s")
-f:: mouseSimulator.右按("f")
-e:: mouseSimulator.上按("e")
-d:: mouseSimulator.下按("d")
-
-#if CapsLockXMode
+#if CurrentMode & LAltMode
 
 ; hold right shift key to simulate horizonal scrolling
 >+t:: ScrollSimulator.左按("t")
@@ -149,6 +122,18 @@ g:: ScrollSimulator.下按("g")
 #if
 
 
+
+show_info_鼠标操作(other_info := ""){
+    global CurrentMode, LAltMode
+    ;CurrentMode += 1
+        tip_str := "CurrentMode: " CurrentMode "`n"
+         . "LAltMode: " LAltMode "`n"
+         . "CurrentMode & LAltMode: "  CurrentMode & LAltMode "`n"
+         . "other_info: " other_info "`n"
+
+
+    ToolTip % tip_str
+}
 CursorHandleGet()
 {
     VarSetCapacity(PCURSORINFO, 20, 0) ;为鼠标信息 结构 设置出20字节空间
