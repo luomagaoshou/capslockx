@@ -15,9 +15,16 @@
 ; will include once
 ;#Include, Modules/AccModel/AccModel.ahk
 ;#Include D:\PycharmProjects\capslockx\mouse\按键模式.ahk
-#Include, CapsLockX-i18n.ahk
-#Include, AccModel/AccModel.ahk
-#Include, CapsLockX-Config2.ahk
+
+#Include,  CapsLockX-i18n.ahk
+#Include,  AccModel/AccModel.ahk
+#Include,  CapsLockX-Config2.ahk
+
+
+;#Include, CapsLockX-i18n.ahk
+;#Include, AccModel/AccModel.ahk
+;#Include, CapsLockX-Config2.ahk
+
 ;#Include, ../Modules/@Help.ahk
 
 ; mycode
@@ -66,36 +73,52 @@ global GID_ROTATE:=5
 global GID_TWOFINGERTAP:=6
 global GID_PRESSANDTAP:=7
 
-Return
-
-
-
-
+global CapsLockXMode := false
 ; 初始化状态变量
-TabIsPressed := false  ; 跟踪 Tab 键的按下状态
+global TabIsPressed := false  ; 跟踪 Tab 键的按下状态
+;global CurrentMode := 5
+;global LAltMode := 4
+;Return ;return不能适用，对程序顺序有影响
+
+
+;#Include, D:\PycharmProjects\capslockx\mouse\按键模式.ahk
+
+
+
+
+
+
 
 ; 检测 Tab 键按下，保留默认功能
 Tab::
+    global TabIsPressed
     TabIsPressed := true  ; 标记 Tab 键被按下
     KeyWait, Tab, T0      ; 确保不干扰 Tab 的默认功能
     Return
 
 ; 检测 Tab 键松开，保留默认功能
 Tab Up::
+    global TabIsPressed
+
     TabIsPressed := false  ; 标记 Tab 键被松开
     SendPlay ,{Tab}
     Return
 
 ; 定义 #IF 条件，仅当 Tab 键按下时激活扩展功能
-#IF TabIsPressed
+#If CapsLockXMode
 
 ; 鼠标运动处理
 s:: mouseSimulator.左按("s")  ; Tab + s 模拟鼠标向左移动
 f:: mouseSimulator.右按("f")  ; Tab + f 模拟鼠标向右移动
 e:: mouseSimulator.上按("e")  ; Tab + e 模拟鼠标向上移动
 d:: mouseSimulator.下按("d")  ; Tab + d 模拟鼠标向下移动
+
+w:: CLX_LMouseButtonDown("w")
+r:: CLX_RMouseButtonDown("r")
+w Up::CLX_LMouseButtonUp()
+r Up:: CLX_RMouseButtonUp()
 Space:: changeMode()
-#IF ; 恢复无条件状态
+;#IF ; 恢复无条件状态
 
 
 ;#if CapsLockXMode
@@ -140,8 +163,6 @@ r Up:: CLX_RMouseButtonUp()
 t:: ScrollSimulator.上按("t")
 g:: ScrollSimulator.下按("g")
 
-#if CurrentMode & LAltMode
-q:: clearMode()
 
 #if
 
@@ -165,10 +186,11 @@ RemoveToolTip:
     Return
 
 show_info_鼠标操作(other_info := ""){
-return
-    global CurrentMode, LAltMode
+;return
+    global CurrentMode, LAltMode, TabIsPressed
     ;CurrentMode += 1
-        tip_str := "CurrentMode: " CurrentMode "`n"
+        tip_str := "TabIsPressed: " TabIsPressed "`n"
+         . "CurrentMode: " CurrentMode "`n"
          . "LAltMode: " LAltMode "`n"
          . "CurrentMode & LAltMode: "  CurrentMode & LAltMode "`n"
          . "other_info: " other_info "`n"
@@ -313,7 +335,7 @@ SendInput_MouseMove(x, y)
 
 ; void mouseSimulator
 mouseSimulator(dx, dy, 状态){
-    ToolTip % "CapsLockXMode: " CapsLockXMode "`n"
+    ;ToolTip % "CapsLockXMode: " CapsLockXMode "`n"
      ;       . "CM_CapsLockX: " CM_CapsLockX "`n"
     ;MsgBox "开始"
 

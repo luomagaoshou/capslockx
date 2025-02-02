@@ -172,9 +172,12 @@ if(T_XKeyAsCustomKey)
 #If
 
 #Include, 按键模式.ahk
+; #Include, 鼠标操作.ahk
+
+
 
 #Include, 鼠标操作.ahk
-;c:: ToolTip %CurrentMode%
+;c:: ToolTip "CurrentMode :" %CurrentMode%
 
 
 UpdateCapsLockXLight()

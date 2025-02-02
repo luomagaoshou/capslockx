@@ -24,7 +24,7 @@ global LCtrlMode := 8 ;双击LCtrl进入
 global CurrentMode := 0 ;用于只在当前状态的变量
 
 
-;b:: show_info2("按键模式") 不是这
+;b:: show_info2("按键模式") ;不是这
 ;#if  CurrentMode |= LAltMode
 
 
@@ -185,7 +185,7 @@ clearMode() {
     CurrentMode := 0
     ToolTip 退出鼠标模式
      ; 设置定时器在1秒钟后关闭ToolTip
-    SetTimer, CloseToolTip, -1000  ; 间隔1000毫秒(1秒)后执行CloseToolTip标签一次
+    SetTimer, CloseToolTip, -200  ; 间隔1000毫秒(1秒)后执行CloseToolTip标签一次
     return CurrentMode
 }
 
@@ -199,4 +199,4 @@ isKeyHold() {
 
 CloseToolTip:
     ToolTip  ; 关闭ToolTip
-    Return
+    ;return false ;return不能适用，对程序顺序有影响
