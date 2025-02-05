@@ -141,11 +141,14 @@ Space:: changeMode()
 #if CurrentMode & LAltMode
 
 ; 鼠标运动处理
-a:: show_info_鼠标操作("配置成功")
+x:: show_info_鼠标操作("配置成功")
 s:: mouseSimulator.左按("s")
 f:: mouseSimulator.右按("f")
 e:: mouseSimulator.上按("e")
 d:: mouseSimulator.下按("d")
+
+; 移动鼠标到光标位置
+q::MoveToCaret()
 
 #if CurrentMode & LAltMode
 
@@ -158,11 +161,16 @@ r Up:: CLX_RMouseButtonUp()
 #if CurrentMode & LAltMode
 
 ; hold right shift key to simulate horizonal scrolling
->+t:: ScrollSimulator.左按("t")
->+g:: ScrollSimulator.右按("g")
-t:: ScrollSimulator.上按("t")
-g:: ScrollSimulator.下按("g")
+;>+t:: ScrollSimulator.左按("t")
+;>+g:: ScrollSimulator.右按("g")
+;t:: ScrollSimulator.上按("t")
+;g:: ScrollSimulator.下按("g")
 
+
+a:: ScrollSimulator.左按("a")
+g:: ScrollSimulator.右按("g")
+t:: ScrollSimulator.上按("t")
+b:: ScrollSimulator.下按("b")
 
 #if
 
@@ -197,6 +205,7 @@ show_info_鼠标操作(other_info := ""){
 
 
     ToolTip % tip_str
+       SetTimer, RemoveToolTip, -1000  ; 1秒后移除提示
 }
 CursorHandleGet()
 {
@@ -383,15 +392,15 @@ mouseSimulator(dx, dy, 状态){
 }
 
 滚轮自动(dx, dy, 状态){
-    if (状态 != "移动") {
-        return
-    }
+    ;if (状态 != "移动") {
+        ;return
+    ;}
     ScrollMouse(dx, dy)
 }
 滚轮自动控制(dx, dy, 状态){
-    if (状态 != "移动") {
-        return
-    }
+   ; if (状态 != "移动") {
+        ;return
+    ;}
     滚轮自动.横速 += dx, 滚轮自动.纵速 += dy, 滚轮自动.始动()
     msg := "【雪星滚轮自动v2】`n"
     msg .= "横：" (滚轮自动.横速|0) "px/s`n纵：" (滚轮自动.纵速|0) "px/s`n"
@@ -401,14 +410,14 @@ mouseSimulator(dx, dy, 状态){
 }
 ScrollSimulator(dx, dy, 状态){
 
-    if (!CapsLockXMode) {
-        return ScrollSimulator.止动()
-    }
+
     if ( 状态 == "横中键" || 状态 == "纵中键") {
 
         SendEvent {Blind}{MButton Down}
-        KeyWait r
-        KeyWait f
+        KeyWait t
+        KeyWait b
+        KeyWait a
+        KeyWait g
         SendEvent {Blind}{MButton Up}
         ; 关闭滚轮自动
         if (滚轮自动.横速 || 滚轮自动.纵速) {
@@ -424,13 +433,15 @@ ScrollSimulator(dx, dy, 状态){
 }
 DragSimulator(dx, dy, 状态){
 
-    if (!CapsLockXMode) {
-        return DragSimulator.止动()
-    }
+    ;if (!CapsLockXMode) {
+        ;return DragSimulator.止动()
+    ;}
     if ( 状态 == "横中键" || 状态 == "纵中键") {
         SendEvent {Blind}{MButton Down}
-        KeyWait r
-        KeyWait f
+          KeyWait t
+        KeyWait b
+        KeyWait a
+        KeyWait g
         SendEvent {Blind}{MButton Up}
         ; 关闭滚轮自动
         if (滚轮自动.横速 || 滚轮自动.纵速) {
@@ -530,3 +541,20 @@ CLX_RMouseButtonUp(){
 ScrollSimulator_ToolTipRemove(){
     ToolTip
 }
+
+MoveToCaret() {
+    CoordMode, Caret, Screen
+    CoordMode, Mouse, Screen
+
+    ; Try to get caret position
+    CaretX := A_CaretX
+    CaretY := A_CaretY
+
+    if (CaretX != "" and CaretY != "") {
+        MouseMove, %CaretX%, %CaretY%, 0
+    }
+}
+
+
+
+
